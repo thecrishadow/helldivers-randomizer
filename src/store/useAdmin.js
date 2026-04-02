@@ -1,48 +1,61 @@
-import { useState, useCallback } from 'react'
-
-const CUSTOM_ITEMS_KEY = 'hd2_custom_items'
-
-function loadCustomItems() {
-  try {
-    return JSON.parse(localStorage.getItem(CUSTOM_ITEMS_KEY) ?? '[]')
-  } catch {
-    return []
-  }
-}
+import { useState, useEffect, useCallback } from 'react'
+import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth'
+import { collection, onSnapshot, addDoc, deleteDoc, doc } from 'firebase/firestore'
+import { auth, db } from '../firebase.js'
 
 export function useAdmin() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [authLoading, setAuthLoading] = useState(true)
   const [editMode, setEditMode] = useState(false)
-  const [customItems, setCustomItems] = useState(loadCustomItems)
+  const [customItems, setCustomItems] = useState([])
 
-  const login = useCallback((user, pass) => {
-    if (user === 'admin' && pass === 'adminC') {
-      setIsLoggedIn(true)
-      return true
-    }
-    return false
+  // Persist Firebase auth session across page reloads
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, user => {
+      setIsLoggedIn(!!user)
+      setAuthLoading(false)
+    })
+    return unsub
   }, [])
 
-  const logout = useCallback(() => {
-    setIsLoggedIn(false)
+  // Listen to custom items in Firestore in real time — all visitors see the same list
+  useEffect(() => {
+    const unsub = onSnapshot(collection(db, 'custom-items'), snapshot => {
+      setCustomItems(snapshot.docs.map(d => ({ id: d.id, ...d.data() })))
+    })
+    return unsub
+  }, [])
+
+  // Returns error string on failure, null on success
+  const login = useCallback(async (email, pass) => {
+    try {
+      await signInWithEmailAndPassword(auth, email, pass)
+      return null
+    } catch (err) {
+      if (
+        err.code === 'auth/invalid-credential' ||
+        err.code === 'auth/wrong-password' ||
+        err.code === 'auth/user-not-found'
+      ) return 'Correo o contraseña incorrectos.'
+      if (err.code === 'auth/too-many-requests')
+        return 'Demasiados intentos fallidos. Intenta más tarde.'
+      return 'Error al iniciar sesión. Intenta de nuevo.'
+    }
+  }, [])
+
+  const logout = useCallback(async () => {
+    await signOut(auth)
     setEditMode(false)
   }, [])
 
-  const addCustomItem = useCallback((item) => {
-    setCustomItems(prev => {
-      const next = [...prev, item]
-      localStorage.setItem(CUSTOM_ITEMS_KEY, JSON.stringify(next))
-      return next
-    })
+  const addCustomItem = useCallback(async (item) => {
+    // Firestore generates the id — no need to create one manually
+    await addDoc(collection(db, 'custom-items'), item)
   }, [])
 
-  const removeCustomItem = useCallback((id) => {
-    setCustomItems(prev => {
-      const next = prev.filter(i => i.id !== id)
-      localStorage.setItem(CUSTOM_ITEMS_KEY, JSON.stringify(next))
-      return next
-    })
+  const removeCustomItem = useCallback(async (itemId) => {
+    await deleteDoc(doc(db, 'custom-items', itemId))
   }, [])
 
-  return { isLoggedIn, login, logout, editMode, setEditMode, customItems, addCustomItem, removeCustomItem }
+  return { isLoggedIn, authLoading, login, logout, editMode, setEditMode, customItems, addCustomItem, removeCustomItem }
 }

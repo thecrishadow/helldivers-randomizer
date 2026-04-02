@@ -8,28 +8,33 @@ import ProfileForm from '../profiles/ProfileForm.jsx'
 
 function AdminLogin() {
   const { login } = useAdminCtx()
-  const [user, setUser] = useState('')
+  const [email, setEmail] = useState('')
   const [pass, setPass] = useState('')
   const [error, setError] = useState(null)
+  const [loading, setLoading] = useState(false)
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault()
-    if (!login(user, pass)) setError('Usuario o contraseña incorrectos.')
+    setLoading(true)
+    const err = await login(email, pass)
+    setLoading(false)
+    if (err) setError(err)
   }
 
   return (
     <div style={{ maxWidth: 360, margin: '60px auto' }}>
       <h2 style={{ fontSize: '1.3rem', marginBottom: 8 }}>Modo Administrador</h2>
       <p style={{ color: 'var(--text)', fontSize: '0.875rem', marginBottom: 24 }}>
-        Inicia sesión para acceder al panel de administración.
+        Inicia sesión con tu cuenta de administrador.
       </p>
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
         <input
-          type="text"
-          placeholder="Usuario"
-          value={user}
-          onChange={e => { setUser(e.target.value); setError(null) }}
-          autoComplete="username"
+          type="email"
+          placeholder="Correo electrónico"
+          value={email}
+          onChange={e => { setEmail(e.target.value); setError(null) }}
+          autoComplete="email"
+          required
         />
         <input
           type="password"
@@ -37,12 +42,13 @@ function AdminLogin() {
           value={pass}
           onChange={e => { setPass(e.target.value); setError(null) }}
           autoComplete="current-password"
+          required
         />
         {error && (
           <span style={{ color: 'var(--danger)', fontSize: '0.85rem' }}>{error}</span>
         )}
-        <button type="submit" className="btn-accent" style={{ marginTop: 4 }}>
-          Iniciar sesión
+        <button type="submit" className="btn-accent" disabled={loading} style={{ marginTop: 4 }}>
+          {loading ? 'Iniciando sesión...' : 'Iniciar sesión'}
         </button>
       </form>
     </div>
@@ -88,12 +94,13 @@ function AddItemSection() {
   const [name, setName] = useState('')
   const [category, setCategory] = useState('primary')
   const [subtype, setSubtype] = useState('support')
+  const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(null)
   const [error, setError] = useState(null)
 
   const allItems = [...ITEMS, ...customItems]
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault()
     const trimmed = name.trim()
     if (!trimmed) { setError('El nombre es requerido.'); return }
@@ -101,18 +108,30 @@ function AddItemSection() {
       setError('Ya existe un objeto con ese nombre.')
       return
     }
-    const id = 'custom_' + trimmed.toLowerCase().replace(/[^a-z0-9]+/g, '_') + '_' + Date.now()
-    const item = {
-      id,
-      name: trimmed,
-      category,
-      ...(category === 'stratagem' ? { subtype } : {}),
+    setLoading(true)
+    try {
+      await addCustomItem({
+        name: trimmed,
+        category,
+        ...(category === 'stratagem' ? { subtype } : {}),
+      })
+      setName('')
+      setError(null)
+      setSuccess(`"${trimmed}" agregado correctamente.`)
+      setTimeout(() => setSuccess(null), 3000)
+    } catch {
+      setError('No se pudo agregar el objeto. Intenta de nuevo.')
+    } finally {
+      setLoading(false)
     }
-    addCustomItem(item)
-    setName('')
-    setError(null)
-    setSuccess(`"${trimmed}" agregado correctamente.`)
-    setTimeout(() => setSuccess(null), 3000)
+  }
+
+  async function handleRemove(itemId) {
+    try {
+      await removeCustomItem(itemId)
+    } catch {
+      setError('No se pudo eliminar el objeto.')
+    }
   }
 
   return (
@@ -120,7 +139,7 @@ function AddItemSection() {
       <h3 className="admin-section__title">Agregar Arma / Estratagema</h3>
       <p style={{ color: 'var(--text)', fontSize: '0.875rem', marginBottom: 20 }}>
         Agrega nuevos objetos personalizados sin editar el código.
-        Se guardan en el almacenamiento local del navegador.
+        Se guardan en la nube y son visibles para todos.
       </p>
 
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 12, maxWidth: 440 }}>
@@ -132,19 +151,13 @@ function AddItemSection() {
           maxLength={60}
         />
         <div style={{ display: 'flex', gap: 10 }}>
-          <select
-            value={category}
-            onChange={e => setCategory(e.target.value)}
-          >
+          <select value={category} onChange={e => setCategory(e.target.value)}>
             {Object.entries(CATEGORY_LABELS).map(([val, label]) => (
               <option key={val} value={val}>{label}</option>
             ))}
           </select>
           {category === 'stratagem' && (
-            <select
-              value={subtype}
-              onChange={e => setSubtype(e.target.value)}
-            >
+            <select value={subtype} onChange={e => setSubtype(e.target.value)}>
               {SUBTYPES.map(s => (
                 <option key={s} value={s}>{SUBTYPE_LABELS[s]}</option>
               ))}
@@ -153,7 +166,9 @@ function AddItemSection() {
         </div>
         {error && <span style={{ color: 'var(--danger)', fontSize: '0.85rem' }}>{error}</span>}
         {success && <span style={{ color: 'var(--success)', fontSize: '0.85rem' }}>{success}</span>}
-        <button type="submit" className="btn-accent">Agregar objeto</button>
+        <button type="submit" className="btn-accent" disabled={loading}>
+          {loading ? 'Guardando...' : 'Agregar objeto'}
+        </button>
       </form>
 
       {customItems.length > 0 && (
@@ -183,7 +198,7 @@ function AddItemSection() {
                   </div>
                 </div>
                 <button
-                  onClick={() => removeCustomItem(item.id)}
+                  onClick={() => handleRemove(item.id)}
                   style={{
                     background: 'transparent',
                     color: 'var(--danger)',
@@ -332,16 +347,23 @@ function UsersSection() {
 
 function AdminPanel() {
   const { logout } = useAdminCtx()
+  const [loggingOut, setLoggingOut] = useState(false)
+
+  async function handleLogout() {
+    setLoggingOut(true)
+    await logout()
+  }
 
   return (
     <div style={{ maxWidth: 700 }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 32 }}>
         <h2 style={{ fontSize: '1.3rem' }}>Panel de Administración</h2>
         <button
-          onClick={logout}
+          onClick={handleLogout}
+          disabled={loggingOut}
           style={{ background: 'transparent', color: 'var(--text)', border: '1px solid var(--border)', fontSize: '0.8rem' }}
         >
-          Cerrar sesión
+          {loggingOut ? 'Cerrando...' : 'Cerrar sesión'}
         </button>
       </div>
 
@@ -355,6 +377,15 @@ function AdminPanel() {
 // ── Page ──────────────────────────────────────────────────────────────────────
 
 export default function AdminPage() {
-  const { isLoggedIn } = useAdminCtx()
+  const { isLoggedIn, authLoading } = useAdminCtx()
+
+  if (authLoading) {
+    return (
+      <div style={{ textAlign: 'center', marginTop: 80, color: 'var(--text)' }}>
+        Verificando sesión...
+      </div>
+    )
+  }
+
   return isLoggedIn ? <AdminPanel /> : <AdminLogin />
 }

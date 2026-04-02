@@ -1,58 +1,44 @@
-import { useState, useEffect, useRef, useCallback } from 'react'
-
-const DB_NAME = 'hd2_images'
-const DB_VERSION = 1
-const STORE_NAME = 'images'
-
-function openDB() {
-  return new Promise((resolve, reject) => {
-    const req = indexedDB.open(DB_NAME, DB_VERSION)
-    req.onupgradeneeded = e => {
-      e.target.result.createObjectStore(STORE_NAME, { keyPath: 'itemId' })
-    }
-    req.onsuccess = e => resolve(e.target.result)
-    req.onerror = e => reject(e.target.error)
-  })
-}
+import { useState, useEffect, useCallback } from 'react'
+import { collection, onSnapshot, doc, setDoc, deleteDoc } from 'firebase/firestore'
+import { ref, uploadString, getDownloadURL, deleteObject } from 'firebase/storage'
+import { db, storage } from '../firebase.js'
 
 export function useImages() {
-  const dbRef = useRef(null)
-  const [images, setImages] = useState({}) // { [itemId]: dataUrl }
+  const [images, setImages] = useState({}) // { [itemId]: downloadUrl }
   const [dbError, setDbError] = useState(null)
 
+  // Listen to Firestore image map in real time — all visitors see the same images
   useEffect(() => {
-    openDB().then(db => {
-      dbRef.current = db
-      const tx = db.transaction(STORE_NAME, 'readonly')
-      const store = tx.objectStore(STORE_NAME)
-      const req = store.getAll()
-      req.onsuccess = () => {
+    const unsub = onSnapshot(
+      collection(db, 'item-images'),
+      snapshot => {
         const map = {}
-        req.result.forEach(r => { map[r.itemId] = r.dataUrl })
+        snapshot.forEach(d => { map[d.id] = d.data().url })
         setImages(map)
-      }
-      req.onerror = () => setDbError('No se pudieron cargar las imágenes guardadas.')
-    }).catch(() => setDbError('No se pudo acceder al almacenamiento local. Las imágenes no estarán disponibles.'))
+      },
+      () => setDbError('No se pudieron cargar las imágenes.')
+    )
+    return unsub
   }, [])
 
-  const setImage = useCallback((itemId, dataUrl) => {
-    if (!dbRef.current) return
-    const tx = dbRef.current.transaction(STORE_NAME, 'readwrite')
-    tx.objectStore(STORE_NAME).put({ itemId, dataUrl })
-    tx.onerror = () => setDbError('No se pudo guardar la imagen.')
-    setImages(prev => ({ ...prev, [itemId]: dataUrl }))
+  const setImage = useCallback(async (itemId, dataUrl) => {
+    try {
+      const storageRef = ref(storage, `item-images/${itemId}`)
+      await uploadString(storageRef, dataUrl, 'data_url')
+      const url = await getDownloadURL(storageRef)
+      await setDoc(doc(db, 'item-images', itemId), { url })
+    } catch {
+      setDbError('No se pudo guardar la imagen.')
+    }
   }, [])
 
-  const deleteImage = useCallback((itemId) => {
-    if (!dbRef.current) return
-    const tx = dbRef.current.transaction(STORE_NAME, 'readwrite')
-    tx.objectStore(STORE_NAME).delete(itemId)
-    tx.onerror = () => setDbError('No se pudo eliminar la imagen.')
-    setImages(prev => {
-      const next = { ...prev }
-      delete next[itemId]
-      return next
-    })
+  const deleteImage = useCallback(async (itemId) => {
+    try {
+      await deleteObject(ref(storage, `item-images/${itemId}`))
+      await deleteDoc(doc(db, 'item-images', itemId))
+    } catch {
+      setDbError('No se pudo eliminar la imagen.')
+    }
   }, [])
 
   return { images, setImage, deleteImage, dbError }
