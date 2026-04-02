@@ -76,12 +76,30 @@ export default function ProfilesPage() {
           )}
         </div>
 
-        {/* Email */}
+        {/* Email / guest notice */}
         <div>
           <div style={{ fontSize: '0.75rem', color: 'var(--text)', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 4 }}>
-            Correo
+            {user?.isAnonymous ? 'Cuenta' : 'Correo'}
           </div>
-          <span style={{ color: 'var(--text)', fontSize: '0.9rem' }}>{user?.email}</span>
+          {user?.isAnonymous ? (
+            <div style={{
+              background: 'rgba(232,200,74,0.1)',
+              border: '1px solid var(--accent-dim)',
+              borderRadius: 6,
+              padding: '8px 12px',
+              fontSize: '0.85rem',
+              color: 'var(--accent)',
+              lineHeight: 1.5,
+            }}>
+              Modo invitado — tu inventario solo se guarda en este dispositivo.
+              <br />
+              <span style={{ color: 'var(--text)', fontSize: '0.8rem' }}>
+                Crea una cuenta para sincronizar tu progreso desde cualquier lugar.
+              </span>
+            </div>
+          ) : (
+            <span style={{ color: 'var(--text)', fontSize: '0.9rem' }}>{user?.email}</span>
+          )}
         </div>
 
         {/* Stats */}

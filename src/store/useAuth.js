@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  signInAnonymously,
   signOut,
   onAuthStateChanged,
   updateProfile,
@@ -48,7 +49,16 @@ export function useAuth() {
     }
   }, [])
 
+  const loginAsGuest = useCallback(async () => {
+    try {
+      await signInAnonymously(auth)
+      return null
+    } catch {
+      return 'No se pudo entrar como invitado. Intenta de nuevo.'
+    }
+  }, [])
+
   const logout = useCallback(() => signOut(auth), [])
 
-  return { user, authLoading, register, login, logout }
+  return { user, authLoading, register, login, loginAsGuest, logout }
 }

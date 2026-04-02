@@ -70,7 +70,7 @@ export default function Nav({ activeTab, onTabChange }) {
           </span>
         )}
         <span style={{ fontSize: '0.8rem', color: 'var(--text-bright)', whiteSpace: 'nowrap' }}>
-          {activeProfile?.name ?? user?.displayName ?? user?.email}
+          {user?.isAnonymous ? 'Invitado' : (activeProfile?.name ?? user?.displayName ?? user?.email)}
         </span>
         <button
           onClick={logout}

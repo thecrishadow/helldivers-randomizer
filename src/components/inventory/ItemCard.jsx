@@ -75,7 +75,7 @@ export default function ItemCard({ item, owned, imageDataUrl, onToggleOwned, onU
             />
             {owned ? 'Desbloqueado' : 'Bloqueado'}
           </label>
-          {imageDataUrl && (
+          {imageDataUrl && editMode && (
             <button
               className="item-card__delete-btn"
               onClick={() => onDeleteImage(item.id)}

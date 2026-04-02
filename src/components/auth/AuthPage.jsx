@@ -104,6 +104,41 @@ function RegisterForm({ onSuccess }) {
   )
 }
 
+function GuestButton() {
+  const { loginAsGuest } = useAuthCtx()
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
+
+  async function handleGuest() {
+    setLoading(true)
+    const err = await loginAsGuest()
+    setLoading(false)
+    if (err) setError(err)
+  }
+
+  return (
+    <div style={{ marginTop: 16, textAlign: 'center' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
+        <div style={{ flex: 1, height: 1, background: 'var(--border)' }} />
+        <span style={{ fontSize: '0.8rem', color: 'var(--text)' }}>o</span>
+        <div style={{ flex: 1, height: 1, background: 'var(--border)' }} />
+      </div>
+      {error && <span style={{ color: 'var(--danger)', fontSize: '0.85rem', display: 'block', marginBottom: 8 }}>{error}</span>}
+      <button
+        onClick={handleGuest}
+        disabled={loading}
+        className="btn-ghost"
+        style={{ width: '100%', padding: '10px 0' }}
+      >
+        {loading ? 'Entrando...' : 'Continuar como invitado'}
+      </button>
+      <p style={{ fontSize: '0.75rem', color: 'var(--text)', marginTop: 8, lineHeight: 1.5 }}>
+        Tu inventario se guardará solo en este dispositivo.
+      </p>
+    </div>
+  )
+}
+
 export default function AuthPage() {
   const [activeTab, setActiveTab] = useState('login')
 
@@ -164,6 +199,7 @@ export default function AuthPage() {
               ? <LoginForm />
               : <RegisterForm onSuccess={() => setActiveTab('login')} />
             }
+            <GuestButton />
           </div>
         </div>
       </div>
