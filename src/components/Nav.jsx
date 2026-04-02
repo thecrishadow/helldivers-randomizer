@@ -1,16 +1,18 @@
-import { useProfilesCtx } from '../App.jsx'
 import { useAdminCtx } from '../App.jsx'
-
-const TABS = [
-  { id: 'inventory',  label: 'Inventario' },
-  { id: 'randomizer', label: 'Randomizer' },
-  { id: 'profiles',   label: 'Perfiles' },
-  { id: 'admin',      label: '⚙ Admin' },
-]
+import { useAuthCtx } from '../App.jsx'
+import { useProfilesCtx } from '../App.jsx'
 
 export default function Nav({ activeTab, onTabChange }) {
+  const { user, logout } = useAuthCtx()
+  const { isAdmin, editMode } = useAdminCtx()
   const { activeProfile } = useProfilesCtx()
-  const { isLoggedIn, editMode } = useAdminCtx()
+
+  const TABS = [
+    { id: 'inventory',  label: 'Inventario' },
+    { id: 'randomizer', label: 'Randomizer' },
+    { id: 'profile',    label: 'Mi Perfil' },
+    ...(isAdmin ? [{ id: 'admin', label: '⚙ Admin' }] : []),
+  ]
 
   return (
     <nav style={{
@@ -20,6 +22,7 @@ export default function Nav({ activeTab, onTabChange }) {
       alignItems: 'center',
       padding: '0 16px',
       gap: 8,
+      flexWrap: 'wrap',
     }}>
       <span style={{
         color: 'var(--accent)',
@@ -52,7 +55,7 @@ export default function Nav({ activeTab, onTabChange }) {
         ))}
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexShrink: 0 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 0', flexShrink: 0 }}>
         {editMode && (
           <span style={{
             fontSize: '0.75rem',
@@ -66,16 +69,21 @@ export default function Nav({ activeTab, onTabChange }) {
             Modo edición
           </span>
         )}
-        {activeProfile && (
-          <span style={{
-            fontSize: '0.8rem',
+        <span style={{ fontSize: '0.8rem', color: 'var(--text-bright)', whiteSpace: 'nowrap' }}>
+          {activeProfile?.name ?? user?.displayName ?? user?.email}
+        </span>
+        <button
+          onClick={logout}
+          style={{
+            background: 'transparent',
             color: 'var(--text)',
-            whiteSpace: 'nowrap',
-            padding: '0 8px',
-          }}>
-            Perfil: <strong style={{ color: 'var(--text-bright)' }}>{activeProfile.name}</strong>
-          </span>
-        )}
+            border: '1px solid var(--border)',
+            padding: '5px 10px',
+            fontSize: '0.8rem',
+          }}
+        >
+          Salir
+        </button>
       </div>
     </nav>
   )

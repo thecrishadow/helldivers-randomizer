@@ -1,59 +1,7 @@
 import { useState } from 'react'
 import { useAdminCtx } from '../../App.jsx'
-import { useProfilesCtx } from '../../App.jsx'
+import { useAuthCtx } from '../../App.jsx'
 import { ITEMS, CATEGORY_LABELS, SUBTYPE_LABELS } from '../../data/items.js'
-import ProfileForm from '../profiles/ProfileForm.jsx'
-
-// ── Login ─────────────────────────────────────────────────────────────────────
-
-function AdminLogin() {
-  const { login } = useAdminCtx()
-  const [email, setEmail] = useState('')
-  const [pass, setPass] = useState('')
-  const [error, setError] = useState(null)
-  const [loading, setLoading] = useState(false)
-
-  async function handleSubmit(e) {
-    e.preventDefault()
-    setLoading(true)
-    const err = await login(email, pass)
-    setLoading(false)
-    if (err) setError(err)
-  }
-
-  return (
-    <div style={{ maxWidth: 360, margin: '60px auto' }}>
-      <h2 style={{ fontSize: '1.3rem', marginBottom: 8 }}>Modo Administrador</h2>
-      <p style={{ color: 'var(--text)', fontSize: '0.875rem', marginBottom: 24 }}>
-        Inicia sesión con tu cuenta de administrador.
-      </p>
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-        <input
-          type="email"
-          placeholder="Correo electrónico"
-          value={email}
-          onChange={e => { setEmail(e.target.value); setError(null) }}
-          autoComplete="email"
-          required
-        />
-        <input
-          type="password"
-          placeholder="Contraseña"
-          value={pass}
-          onChange={e => { setPass(e.target.value); setError(null) }}
-          autoComplete="current-password"
-          required
-        />
-        {error && (
-          <span style={{ color: 'var(--danger)', fontSize: '0.85rem' }}>{error}</span>
-        )}
-        <button type="submit" className="btn-accent" disabled={loading} style={{ marginTop: 4 }}>
-          {loading ? 'Iniciando sesión...' : 'Iniciar sesión'}
-        </button>
-      </form>
-    </div>
-  )
-}
 
 // ── Edit Mode Toggle ──────────────────────────────────────────────────────────
 
@@ -105,8 +53,7 @@ function AddItemSection() {
     const trimmed = name.trim()
     if (!trimmed) { setError('El nombre es requerido.'); return }
     if (allItems.some(i => i.name.toLowerCase() === trimmed.toLowerCase())) {
-      setError('Ya existe un objeto con ese nombre.')
-      return
+      setError('Ya existe un objeto con ese nombre.'); return
     }
     setLoading(true)
     try {
@@ -126,20 +73,11 @@ function AddItemSection() {
     }
   }
 
-  async function handleRemove(itemId) {
-    try {
-      await removeCustomItem(itemId)
-    } catch {
-      setError('No se pudo eliminar el objeto.')
-    }
-  }
-
   return (
     <section className="admin-section">
       <h3 className="admin-section__title">Agregar Arma / Estratagema</h3>
       <p style={{ color: 'var(--text)', fontSize: '0.875rem', marginBottom: 20 }}>
-        Agrega nuevos objetos personalizados sin editar el código.
-        Se guardan en la nube y son visibles para todos.
+        Agrega nuevos objetos sin editar el código. Se guardan en la nube y son visibles para todos.
       </p>
 
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 12, maxWidth: 440 }}>
@@ -178,18 +116,15 @@ function AddItemSection() {
           </h4>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             {customItems.map(item => (
-              <div
-                key={item.id}
-                style={{
-                  background: 'var(--bg-card)',
-                  border: '1px solid var(--border)',
-                  borderRadius: 8,
-                  padding: '10px 14px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 12,
-                }}
-              >
+              <div key={item.id} style={{
+                background: 'var(--bg-card)',
+                border: '1px solid var(--border)',
+                borderRadius: 8,
+                padding: '10px 14px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 12,
+              }}>
                 <div style={{ flex: 1 }}>
                   <div style={{ color: 'var(--text-bright)', fontSize: '0.875rem' }}>{item.name}</div>
                   <div style={{ color: 'var(--text)', fontSize: '0.75rem', marginTop: 2 }}>
@@ -198,14 +133,8 @@ function AddItemSection() {
                   </div>
                 </div>
                 <button
-                  onClick={() => handleRemove(item.id)}
-                  style={{
-                    background: 'transparent',
-                    color: 'var(--danger)',
-                    border: '1px solid rgba(239,68,68,0.3)',
-                    padding: '4px 10px',
-                    fontSize: '0.8rem',
-                  }}
+                  onClick={() => removeCustomItem(item.id)}
+                  style={{ background: 'transparent', color: 'var(--danger)', border: '1px solid rgba(239,68,68,0.3)', padding: '4px 10px', fontSize: '0.8rem' }}
                 >
                   Eliminar
                 </button>
@@ -221,132 +150,49 @@ function AddItemSection() {
 // ── Users ─────────────────────────────────────────────────────────────────────
 
 function UsersSection() {
-  const { profiles, activeProfileId, setActiveProfileId, renameProfile, deleteProfile } = useProfilesCtx()
-  const [editingId, setEditingId] = useState(null)
-  const [editName, setEditName] = useState('')
-
-  function startEdit(profile) {
-    setEditingId(profile.id)
-    setEditName(profile.name)
-  }
-
-  function commitEdit(id) {
-    renameProfile(id, editName)
-    setEditingId(null)
-  }
-
-  function handleDelete(id) {
-    if (!confirm('¿Eliminar este usuario? Se perderán los datos de inventario del perfil.')) return
-    deleteProfile(id)
-  }
-
-  const ownedCount = p => Object.keys(p.ownedItems).length
+  const { allProfiles } = useAdminCtx()
 
   return (
     <section className="admin-section">
-      <h3 className="admin-section__title">Gestión de Usuarios</h3>
+      <h3 className="admin-section__title">Usuarios registrados ({allProfiles.length})</h3>
       <p style={{ color: 'var(--text)', fontSize: '0.875rem', marginBottom: 20 }}>
-        Crea, renombra o elimina perfiles de usuario. Cada perfil tiene su propio inventario.
+        Los usuarios se registran ellos mismos desde la pantalla de inicio.
       </p>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 28 }}>
-        {profiles.map(profile => {
-          const isActive = profile.id === activeProfileId
-          const isEditing = editingId === profile.id
-
-          return (
-            <div
-              key={profile.id}
-              style={{
-                background: isActive ? 'var(--bg-card)' : 'var(--bg-primary)',
-                border: `1px solid ${isActive ? 'var(--border-accent)' : 'var(--border)'}`,
-                borderRadius: 10,
-                padding: '12px 16px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 12,
-              }}
-            >
-              <div style={{
-                width: 10, height: 10, borderRadius: '50%', flexShrink: 0,
-                background: isActive ? 'var(--accent)' : 'var(--border)',
-              }} />
-
-              <div style={{ flex: 1, minWidth: 0 }}>
-                {isEditing ? (
-                  <form
-                    onSubmit={e => { e.preventDefault(); commitEdit(profile.id) }}
-                    style={{ display: 'flex', gap: 8 }}
-                  >
-                    <input
-                      autoFocus
-                      type="text"
-                      value={editName}
-                      onChange={e => setEditName(e.target.value)}
-                      maxLength={40}
-                      style={{ maxWidth: 200 }}
-                    />
-                    <button type="submit" style={{ background: 'var(--accent)', color: '#000', fontWeight: 600 }}>
-                      Guardar
-                    </button>
-                    <button type="button" onClick={() => setEditingId(null)}
-                      style={{ background: 'var(--bg-card-alt)', color: 'var(--text)', border: '1px solid var(--border)' }}>
-                      Cancelar
-                    </button>
-                  </form>
-                ) : (
-                  <>
-                    <div style={{ color: isActive ? 'var(--text-bright)' : 'var(--text)', fontWeight: isActive ? 600 : 400 }}>
-                      {profile.name}
-                    </div>
-                    <div style={{ fontSize: '0.75rem', color: 'var(--text)', marginTop: 2 }}>
-                      {ownedCount(profile)} objetos desbloqueados
-                    </div>
-                  </>
-                )}
-              </div>
-
-              {!isEditing && (
-                <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
-                  {!isActive && (
-                    <button
-                      onClick={() => setActiveProfileId(profile.id)}
-                      style={{ background: 'var(--accent)', color: '#000', fontWeight: 600 }}
-                    >
-                      Seleccionar
-                    </button>
-                  )}
-                  <button
-                    onClick={() => startEdit(profile)}
-                    style={{ background: 'var(--bg-card-alt)', color: 'var(--text)', border: '1px solid var(--border)' }}
-                  >
-                    Renombrar
-                  </button>
-                  <button
-                    onClick={() => handleDelete(profile.id)}
-                    style={{ background: 'transparent', color: 'var(--danger)', border: '1px solid rgba(239,68,68,0.3)' }}
-                  >
-                    Eliminar
-                  </button>
+      {allProfiles.length === 0 ? (
+        <p style={{ color: 'var(--text)', fontSize: '0.875rem' }}>No hay usuarios registrados aún.</p>
+      ) : (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          {allProfiles.map(profile => (
+            <div key={profile.id} style={{
+              background: 'var(--bg-card)',
+              border: '1px solid var(--border)',
+              borderRadius: 8,
+              padding: '12px 16px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 12,
+            }}>
+              <div style={{ flex: 1 }}>
+                <div style={{ color: 'var(--text-bright)', fontSize: '0.875rem', fontWeight: 500 }}>
+                  {profile.name}
                 </div>
-              )}
+                <div style={{ color: 'var(--text)', fontSize: '0.75rem', marginTop: 2 }}>
+                  {Object.keys(profile.ownedItems ?? {}).length} objetos desbloqueados
+                </div>
+              </div>
             </div>
-          )
-        })}
-      </div>
-
-      <div style={{ borderTop: '1px solid var(--border)', paddingTop: 20 }}>
-        <h4 style={{ fontSize: '0.9rem', color: 'var(--text-bright)', marginBottom: 14 }}>Crear nuevo usuario</h4>
-        <ProfileForm />
-      </div>
+          ))}
+        </div>
+      )}
     </section>
   )
 }
 
-// ── Admin Panel ───────────────────────────────────────────────────────────────
+// ── Panel ─────────────────────────────────────────────────────────────────────
 
-function AdminPanel() {
-  const { logout } = useAdminCtx()
+export default function AdminPage() {
+  const { logout } = useAuthCtx()
   const [loggingOut, setLoggingOut] = useState(false)
 
   async function handleLogout() {
@@ -372,20 +218,4 @@ function AdminPanel() {
       <UsersSection />
     </div>
   )
-}
-
-// ── Page ──────────────────────────────────────────────────────────────────────
-
-export default function AdminPage() {
-  const { isLoggedIn, authLoading } = useAdminCtx()
-
-  if (authLoading) {
-    return (
-      <div style={{ textAlign: 'center', marginTop: 80, color: 'var(--text)' }}>
-        Verificando sesión...
-      </div>
-    )
-  }
-
-  return isLoggedIn ? <AdminPanel /> : <AdminLogin />
 }
