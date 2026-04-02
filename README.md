@@ -1,16 +1,15 @@
-# React + Vite
+# ⚔ HD2 Randomizer
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Randomizador de loadouts para **Helldivers 2**. Selecciona equipamiento aleatorio de tu inventario desbloqueado, lleva registro de lo que tienes y sincroniza tu progreso en cualquier dispositivo.
 
-Currently, two official plugins are available:
+## Funcionalidades
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- **Inventario** — Marca los ítems que ya desbloqueaste (arma primaria, secundaria, granada, estratagemas, armadura).
+- **Randomizer** — Genera un loadout aleatorio usando únicamente lo que tienes desbloqueado.
+- **Cuentas de usuario** — Registro e inicio de sesión con correo y contraseña. Tu inventario se sincroniza en la nube.
+- **Modo invitado** — Usa la app sin crear cuenta. El inventario se guarda localmente en el dispositivo.
+- **Perfil** — Cambia tu nombre de usuario y consulta cuántos ítems tienes desbloqueados.
+- **Modo Admin** — Panel exclusivo para administradores con:
+  - Toggle de modo edición para asignar imágenes a los ítems.
+  - Agregar y eliminar ítems personalizados (armas, estratagemas, etc.) sin tocar el código.
+  - Gestión de perfiles de todos los usuarios registrados.
