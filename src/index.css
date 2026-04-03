@@ -206,6 +206,50 @@ select:focus { border-color: var(--accent-dim); }
   font-size: 0.75rem;
 }
 
+.item-card--archived {
+  opacity: 0.35;
+  border-style: dashed;
+  filter: grayscale(0.6);
+}
+
+.item-card--add {
+  background: var(--bg-primary);
+  border: 1px dashed var(--border);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 130px;
+  transition: border-color 0.15s;
+}
+
+.item-card--add:hover {
+  border-color: var(--accent-dim);
+}
+
+.item-card__edit-actions {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin-top: 2px;
+}
+
+.item-card__action-btn {
+  font-size: 0.68rem;
+  padding: 2px 6px;
+  background: var(--bg-card-alt);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  flex: 1;
+}
+
+.item-card__action-btn--danger {
+  color: #fca5a5;
+  border-color: rgba(239,68,68,0.3);
+}
+
 /* ── Loadout Slots ──────────────────────────────────────────── */
 .loadout-slot {
   background: var(--bg-card);

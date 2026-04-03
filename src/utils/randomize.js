@@ -19,7 +19,7 @@ export function randomize(ownedSet, allItems) {
   const secondaries = byCategory('secondary')
   const grenades    = byCategory('grenade')
   const stratagems  = byCategory('stratagem')
-
+ 
   const errors = []
   if (primaries.length < 1)   errors.push('necesitas al menos 1 arma primaria')
   if (secondaries.length < 1) errors.push('necesitas al menos 1 arma secundaria')

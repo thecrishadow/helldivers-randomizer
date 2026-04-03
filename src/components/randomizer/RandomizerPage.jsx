@@ -12,7 +12,14 @@ export default function RandomizerPage() {
   const { ownedSet } = useProfilesCtx()
   const { images } = useImagesCtx()
   const { customItems } = useAdminCtx()
-  const allItems = useMemo(() => [...ITEMS, ...customItems], [customItems])
+  const { itemOverrides } = useAdminCtx()
+  const allItems = useMemo(() => {
+    return [...ITEMS, ...customItems].map(item => {
+      const ov = itemOverrides[item.id]
+      if (!ov) return item
+      return { ...item, ...(ov.name ? { name: ov.name } : {}), archived: ov.archived ?? false }
+    }).filter(item => !item.archived)
+  }, [customItems, itemOverrides])
   const [loadout, setLoadout] = useState(null)
   const [error, setError] = useState(null)
   const [rolling, setRolling] = useState(false)
