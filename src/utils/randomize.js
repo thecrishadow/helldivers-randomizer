@@ -12,8 +12,10 @@ function shuffle(arr) {
  * @param {Array} allItems - full item list (base items + custom items)
  * @returns {{ primary, secondary, grenade, stratagems } | { error: string }}
  */
+const EXCLUDED_SUBTYPES = new Set(['mission', 'cqc'])
+
 export function randomize(ownedSet, allItems) {
-  const byCategory = cat => allItems.filter(i => i.category === cat && ownedSet.has(i.id))
+  const byCategory = cat => allItems.filter(i => i.category === cat && ownedSet.has(i.id) && !EXCLUDED_SUBTYPES.has(i.subtype))
 
   const primaries   = byCategory('primary')
   const secondaries = byCategory('secondary')

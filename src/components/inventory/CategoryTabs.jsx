@@ -22,11 +22,7 @@ export default function CategoryTabs({ active, onChange, counts }) {
             }}
           >
             {label}
-            <span style={{
-              marginLeft: 8,
-              fontSize: '0.75rem',
-              opacity: 0.7,
-            }}>
+            <span style={{ marginLeft: 8, fontSize: '0.75rem', opacity: 0.7 }}>
               {owned}/{total}
             </span>
           </button>
