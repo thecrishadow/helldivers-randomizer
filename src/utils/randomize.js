@@ -21,7 +21,8 @@ export function randomize(ownedSet, allItems) {
   const secondaries = byCategory('secondary')
   const grenades    = byCategory('grenade')
   const stratagems  = byCategory('stratagem')
- 
+  const boosters    = byCategory('booster')
+
   const errors = []
   if (primaries.length < 1)   errors.push('necesitas al menos 1 arma primaria')
   if (secondaries.length < 1) errors.push('necesitas al menos 1 arma secundaria')
@@ -37,5 +38,6 @@ export function randomize(ownedSet, allItems) {
     secondary:  shuffle(secondaries)[0],
     grenade:    shuffle(grenades)[0],
     stratagems: shuffle(stratagems).slice(0, 4),
+    booster:    boosters.length > 0 ? shuffle(boosters)[0] : null,
   }
 }

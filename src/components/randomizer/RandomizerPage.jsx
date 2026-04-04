@@ -83,6 +83,9 @@ export default function RandomizerPage() {
             <LoadoutSlot label="Primaria"   item={loadout.primary}   imageDataUrl={images[loadout.primary?.id]} />
             <LoadoutSlot label="Secundaria" item={loadout.secondary} imageDataUrl={images[loadout.secondary?.id]} />
             <LoadoutSlot label="Granada"    item={loadout.grenade}   imageDataUrl={images[loadout.grenade?.id]} />
+            {loadout.booster && (
+              <LoadoutSlot label="Booster" item={loadout.booster} imageDataUrl={images[loadout.booster?.id]} />
+            )}
           </div>
 
           {/* Stratagems row */}
