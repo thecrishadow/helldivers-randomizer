@@ -1,5 +1,14 @@
 import { useState, useMemo } from 'react'
-import { ITEMS, CATEGORIES, CATEGORY_LABELS, SUBTYPE_LABELS, WARBONDS } from '../../data/items.js'
+import { ITEMS, CATEGORIES, CATEGORY_LABELS, SUBTYPE_LABELS, WARBONDS, GROUPED_CATEGORIES } from '../../data/items.js'
+
+const CATEGORY_SUBTYPES = {
+  primary:   ['assault_rifle', 'shotgun', 'marksman_rifle', 'smg', 'energy', 'explosive', 'flamethrower', 'volley_gun'],
+  secondary: ['pistol', 'explosive', 'energy', 'melee'],
+  grenade:   ['standard', 'special', 'incendiary'],
+  armor:     ['light', 'medium', 'heavy'],
+  stratagem: ['eagle', 'orbital', 'support', 'backpack', 'sentry', 'emplacement', 'mines', 'mech', 'mission', 'cqc'],
+  booster:   ['supply', 'survival', 'mobility', 'recon', 'reinforcement', 'extraction', 'stealth', 'hellpod', 'combat'],
+}
 import { useProfilesCtx } from '../../App.jsx'
 import { useImagesCtx } from '../../App.jsx'
 import { useAdminCtx } from '../../App.jsx'
@@ -188,7 +197,7 @@ export default function InventoryPage() {
       return (
         <button
           className="item-card item-card--add"
-          onClick={() => setAddForm({ name: '', subtype: activeCategory === 'stratagem' ? 'support' : '' })}
+          onClick={() => setAddForm({ name: '', subtype: (CATEGORY_SUBTYPES[activeCategory] ?? [])[0] ?? '' })}
           style={{ cursor: 'pointer', justifyContent: 'center', alignItems: 'center', minHeight: 130 }}
         >
           <span style={{ fontSize: '1.8rem', color: 'var(--border)' }}>＋</span>
@@ -211,22 +220,15 @@ export default function InventoryPage() {
           maxLength={60}
           style={{ fontSize: '0.78rem', padding: '4px 8px' }}
         />
-        {activeCategory === 'stratagem' && (
-          <select
-            value={addForm.subtype}
-            onChange={e => setAddForm(f => ({ ...f, subtype: e.target.value }))}
-            style={{ fontSize: '0.75rem', padding: '4px 6px' }}
-          >
-            <option value="eagle">Eagle</option>
-            <option value="orbital">Orbital</option>
-            <option value="support">Support</option>
-            <option value="backpack">Backpack</option>
-            <option value="sentry">Sentry</option>
-            <option value="emplacement">Emplacement</option>
-            <option value="mines">Mines</option>
-            <option value="mech">Mech</option>
-          </select>
-        )}
+        <select
+          value={addForm.subtype}
+          onChange={e => setAddForm(f => ({ ...f, subtype: e.target.value }))}
+          style={{ fontSize: '0.75rem', padding: '4px 6px' }}
+        >
+          {(CATEGORY_SUBTYPES[activeCategory] ?? []).map(s => (
+            <option key={s} value={s}>{SUBTYPE_LABELS[s] ?? s}</option>
+          ))}
+        </select>
         <div style={{ display: 'flex', gap: 4 }}>
           <button type="submit" style={{ flex: 1, padding: '4px 6px', fontSize: '0.72rem', background: 'var(--accent)', color: '#000', fontWeight: 700 }}>
             Guardar

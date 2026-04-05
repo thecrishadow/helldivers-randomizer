@@ -35,18 +35,30 @@ function EditModeSection() {
 
 // ── Add Item ──────────────────────────────────────────────────────────────────
 
-const SUBTYPES = ['eagle', 'orbital', 'support', 'defensive']
+const CATEGORY_SUBTYPES = {
+  primary:   ['assault_rifle', 'shotgun', 'marksman_rifle', 'smg', 'energy', 'explosive', 'flamethrower', 'volley_gun'],
+  secondary: ['pistol', 'explosive', 'energy', 'melee'],
+  grenade:   ['standard', 'special', 'incendiary'],
+  armor:     ['light', 'medium', 'heavy'],
+  stratagem: ['eagle', 'orbital', 'support', 'backpack', 'sentry', 'emplacement', 'mines', 'mech', 'mission', 'cqc'],
+  booster:   ['supply', 'survival', 'mobility', 'recon', 'reinforcement', 'extraction', 'stealth', 'hellpod', 'combat'],
+}
 
 function AddItemSection() {
   const { customItems, addCustomItem, removeCustomItem } = useAdminCtx()
   const [name, setName] = useState('')
   const [category, setCategory] = useState('primary')
-  const [subtype, setSubtype] = useState('support')
+  const [subtype, setSubtype] = useState(CATEGORY_SUBTYPES['primary'][0])
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(null)
   const [error, setError] = useState(null)
 
   const allItems = [...ITEMS, ...customItems]
+
+  function handleCategoryChange(cat) {
+    setCategory(cat)
+    setSubtype(CATEGORY_SUBTYPES[cat][0])
+  }
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -57,11 +69,7 @@ function AddItemSection() {
     }
     setLoading(true)
     try {
-      await addCustomItem({
-        name: trimmed,
-        category,
-        ...(category === 'stratagem' ? { subtype } : {}),
-      })
+      await addCustomItem({ name: trimmed, category, subtype })
       setName('')
       setError(null)
       setSuccess(`"${trimmed}" agregado correctamente.`)
@@ -75,7 +83,7 @@ function AddItemSection() {
 
   return (
     <section className="admin-section">
-      <h3 className="admin-section__title">Agregar Arma / Estratagema</h3>
+      <h3 className="admin-section__title">Agregar ítem</h3>
       <p style={{ color: 'var(--text)', fontSize: '0.875rem', marginBottom: 20 }}>
         Agrega nuevos objetos sin editar el código. Se guardan en la nube y son visibles para todos.
       </p>
@@ -83,24 +91,22 @@ function AddItemSection() {
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 12, maxWidth: 440 }}>
         <input
           type="text"
-          placeholder="Nombre del arma o estratagema"
+          placeholder="Nombre del ítem"
           value={name}
           onChange={e => { setName(e.target.value); setError(null) }}
           maxLength={60}
         />
         <div style={{ display: 'flex', gap: 10 }}>
-          <select value={category} onChange={e => setCategory(e.target.value)}>
+          <select value={category} onChange={e => handleCategoryChange(e.target.value)}>
             {Object.entries(CATEGORY_LABELS).map(([val, label]) => (
               <option key={val} value={val}>{label}</option>
             ))}
           </select>
-          {category === 'stratagem' && (
-            <select value={subtype} onChange={e => setSubtype(e.target.value)}>
-              {SUBTYPES.map(s => (
-                <option key={s} value={s}>{SUBTYPE_LABELS[s]}</option>
-              ))}
-            </select>
-          )}
+          <select value={subtype} onChange={e => setSubtype(e.target.value)}>
+            {CATEGORY_SUBTYPES[category].map(s => (
+              <option key={s} value={s}>{SUBTYPE_LABELS[s] ?? s}</option>
+            ))}
+          </select>
         </div>
         {error && <span style={{ color: 'var(--danger)', fontSize: '0.85rem' }}>{error}</span>}
         {success && <span style={{ color: 'var(--success)', fontSize: '0.85rem' }}>{success}</span>}
