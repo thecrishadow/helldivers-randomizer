@@ -2,7 +2,6 @@ import { useState, useMemo } from 'react'
 import { useProfilesCtx } from '../../App.jsx'
 import { useImagesCtx } from '../../App.jsx'
 import { useAdminCtx } from '../../App.jsx'
-import { ITEMS } from '../../data/items.js'
 import { randomize } from '../../utils/randomize.js'
 import LoadoutSlot from './LoadoutSlot.jsx'
 
@@ -11,24 +10,17 @@ const STRAT_LABELS = ['Estratagema 1', 'Estratagema 2', 'Estratagema 3', 'Estrat
 export default function RandomizerPage() {
   const { ownedSet } = useProfilesCtx()
   const { images } = useImagesCtx()
-  const { customItems } = useAdminCtx()
-  const { itemOverrides } = useAdminCtx()
-  const allItems = useMemo(() => {
-    return [...ITEMS, ...customItems].map(item => {
-      const ov = itemOverrides[item.id]
-      if (!ov) return item
-      return { ...item, ...(ov.name ? { name: ov.name } : {}), archived: ov.archived ?? false }
-    }).filter(item => !item.archived)
-  }, [customItems, itemOverrides])
+  const { catalogItems } = useAdminCtx()
+
+  const allItems = useMemo(() => catalogItems.filter(i => !i.archived), [catalogItems])
+
   const [loadout, setLoadout] = useState(null)
-  const [error, setError] = useState(null)
+  const [error, setError]     = useState(null)
   const [rolling, setRolling] = useState(false)
 
   function roll() {
     setRolling(true)
     setError(null)
-
-    // Small delay for feel
     setTimeout(() => {
       const result = randomize(ownedSet, allItems)
       if (result.error) {
@@ -48,11 +40,7 @@ export default function RandomizerPage() {
         <p style={{ color: 'var(--text)', marginBottom: 24, fontSize: '0.9rem' }}>
           Genera un loadout aleatorio con tus armas y estratagemas desbloqueadas.
         </p>
-        <button
-          onClick={roll}
-          disabled={rolling}
-          className="btn-accent"
-        >
+        <button onClick={roll} disabled={rolling} className="btn-accent">
           {rolling ? 'Sorteando...' : '🎲 ¡Sortear Loadout!'}
         </button>
       </div>
@@ -73,7 +61,6 @@ export default function RandomizerPage() {
 
       {loadout && (
         <div>
-          {/* Weapons row */}
           <div style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
@@ -87,8 +74,6 @@ export default function RandomizerPage() {
               <LoadoutSlot label="Booster" item={loadout.booster} imageDataUrl={images[loadout.booster?.id]} />
             )}
           </div>
-
-          {/* Stratagems row */}
           <div style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
@@ -107,13 +92,7 @@ export default function RandomizerPage() {
       )}
 
       {!loadout && !error && (
-        <div style={{
-          textAlign: 'center',
-          color: 'var(--border)',
-          fontSize: '4rem',
-          marginTop: 40,
-          userSelect: 'none',
-        }}>
+        <div style={{ textAlign: 'center', color: 'var(--border)', fontSize: '4rem', marginTop: 40, userSelect: 'none' }}>
           🎯
         </div>
       )}

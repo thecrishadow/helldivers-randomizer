@@ -1,3 +1,6 @@
+// El catálogo de ítems vive en Firestore (colección "catalog").
+// Este archivo solo contiene constantes estructurales usadas en la UI.
+
 // ─── WARBONDS ────────────────────────────────────────────────────────────────
 export const WARBONDS = [
   { id: 'helldivers_mobilize',    name: 'Helldivers Mobilize!' },
@@ -20,248 +23,7 @@ export const WARBONDS = [
   { id: 'super_citizen',          name: 'Super Citizen Edition' },
 ]
 
-// IDs desbloqueados por defecto para nuevos usuarios (nivel 1)
-export const DEFAULT_OWNED_IDS = [
-  'primary_liberator',
-  'secondary_peacemaker',
-  'grenade_frag',
-  'strat_orbital_precision',
-  'strat_eagle_airstrike',
-  'strat_eagle_strafing',
-  'strat_reinforce',
-  'strat_sos_beacon',
-  'strat_hellbomb',
-  'strat_seaf_artillery',
-  'strat_upload_data',
-  'strat_resupply',
-]
-
-export const ITEMS = [
-  // ─── PRIMARY: ASSAULT RIFLE ──────────────────────────────────────────────
-  { id: 'primary_liberator',            category: 'primary', subtype: 'assault_rifle', warbond: 'helldivers_mobilize', name: 'AR-23 Liberator' },
-  { id: 'primary_liberator_penetrator', category: 'primary', subtype: 'assault_rifle', warbond: 'helldivers_mobilize', name: 'AR-23P Liberator Penetrator' },
-  { id: 'primary_liberator_concussive', category: 'primary', subtype: 'assault_rifle', warbond: 'helldivers_mobilize', name: 'AR-23C Liberator Concussive' },
-  { id: 'primary_tenderizer',           category: 'primary', subtype: 'assault_rifle', warbond: 'polar_patriots',     name: 'AR-61 Tenderizer' },
-  { id: 'primary_ar2_coyote',           category: 'primary', subtype: 'assault_rifle', warbond: 'dust_devils',        name: 'AR-2 Coyote' },
-  { id: 'primary_one_two',              category: 'primary', subtype: 'assault_rifle', warbond: 'python_commandos',   name: 'AR/GL-21 One-Two' },
-  { id: 'primary_sta52',                category: 'primary', subtype: 'assault_rifle', warbond: 'halo_reach',         name: 'StA-52 Assault Rifle' },
-  { id: 'primary_ma5c',                 category: 'primary', subtype: 'assault_rifle', warbond: 'halo_reach',         name: 'MA5C Assault Rifle' },
-  // ─── PRIMARY: SHOTGUN ───────────────────────────────────────────────────
-  { id: 'primary_punisher',             category: 'primary', subtype: 'shotgun',        warbond: 'helldivers_mobilize', name: 'SG-8 Punisher' },
-  { id: 'primary_breaker',              category: 'primary', subtype: 'shotgun',        warbond: 'helldivers_mobilize', name: 'SG-225 Breaker' },
-  { id: 'primary_spray_and_pray',       category: 'primary', subtype: 'shotgun',        warbond: 'helldivers_mobilize', name: 'SG-225SP Breaker Spray&Pray' },
-  { id: 'primary_breaker_incendiary',   category: 'primary', subtype: 'shotgun',        warbond: 'steeled_veterans',   name: 'SG-225IE Breaker Incendiary' },
-  { id: 'primary_slugger',              category: 'primary', subtype: 'shotgun',        warbond: 'helldivers_mobilize', name: 'SG-8S Slugger' },
-  { id: 'primary_halt',                 category: 'primary', subtype: 'shotgun',        warbond: 'polar_patriots',     name: 'SG-20 Halt' },
-  { id: 'primary_cookout',              category: 'primary', subtype: 'shotgun',        warbond: 'freedoms_flame',     name: 'SG-451 Cookout' },
-  { id: 'primary_bushwhacker',          category: 'primary', subtype: 'shotgun',        warbond: 'borderline_justice', name: 'SG-22 Bushwhacker' },
-  { id: 'primary_m90',                  category: 'primary', subtype: 'shotgun',        warbond: 'halo_reach',         name: 'M90 Shotgun' },
-  { id: 'primary_sweeper',              category: 'primary', subtype: 'shotgun',        warbond: 'entrenched_division', name: 'SG-X Sweeper' },
-  // ─── PRIMARY: MARKSMAN RIFLE ────────────────────────────────────────────
-  { id: 'primary_constitution',         category: 'primary', subtype: 'marksman_rifle', warbond: 'helldivers_mobilize', name: 'R-63 Diligence' },
-  { id: 'primary_diligence_cs',         category: 'primary', subtype: 'marksman_rifle', warbond: 'helldivers_mobilize', name: 'R-63CS Diligence Counter Sniper' },
-  { id: 'primary_adjudicator',          category: 'primary', subtype: 'marksman_rifle', warbond: 'democratic_detonation', name: 'BR-14 Adjudicator' },
-  // ─── PRIMARY: SUBMACHINE GUN ────────────────────────────────────────────
-  { id: 'primary_defender',             category: 'primary', subtype: 'smg',            warbond: 'helldivers_mobilize', name: 'SMG-37 Defender' },
-  { id: 'primary_pummeler',             category: 'primary', subtype: 'smg',            warbond: 'cutting_edge',       name: 'SMG-72 Pummeler' },
-  { id: 'primary_knight',               category: 'primary', subtype: 'smg',            warbond: 'super_citizen',      name: 'MP-98 Knight' },
-  { id: 'primary_stoker',               category: 'primary', subtype: 'smg',            warbond: 'entrenched_division', name: 'SMG-X Stoker' },
-  // ─── PRIMARY: ENERGY ────────────────────────────────────────────────────
-  { id: 'primary_scythe',               category: 'primary', subtype: 'energy',         warbond: 'helldivers_mobilize', name: 'LAS-5 Scythe' },
-  { id: 'primary_diligence',            category: 'primary', subtype: 'energy',         warbond: 'helldivers_mobilize', name: 'PLAS-1 Scorcher' },
-  { id: 'primary_scorcher',             category: 'primary', subtype: 'energy',         warbond: 'polar_patriots',     name: 'PLAS-101 Purifier' },
-  { id: 'primary_loyalist',             category: 'primary', subtype: 'energy',         warbond: 'chemical_agents',    name: 'PLAS-15 Loyalist' },
-  { id: 'primary_punisher_plasma',      category: 'primary', subtype: 'energy',         warbond: 'cutting_edge',       name: 'SG-8P Punisher Plasma' },
-  { id: 'primary_sickle',               category: 'primary', subtype: 'energy',         warbond: 'cutting_edge',       name: 'LAS-16 Sickle' },
-  { id: 'primary_double_edge_sickle',   category: 'primary', subtype: 'energy',         warbond: 'viper_commandos',    name: 'LAS-17 Double-Edge Sickle' },
-  // ─── PRIMARY: EXPLOSIVE ─────────────────────────────────────────────────
-  { id: 'primary_crossbow',             category: 'primary', subtype: 'explosive',      warbond: 'democratic_detonation', name: 'CB-9 Explosive Crossbow' },
-  { id: 'primary_eruptor',              category: 'primary', subtype: 'explosive',      warbond: 'democratic_detonation', name: 'R-36 Eruptor' },
-  { id: 'primary_dominator',            category: 'primary', subtype: 'explosive',      warbond: 'steeled_veterans',   name: 'JAR-5 Dominator' },
-  // ─── PRIMARY: FLAMETHROWER / VOLLEY GUN ─────────────────────────────────
-  { id: 'primary_torcherer',            category: 'primary', subtype: 'flamethrower',   warbond: 'freedoms_flame',     name: 'FLAM-66 Torcher' },
-  { id: 'primary_variable',             category: 'primary', subtype: 'volley_gun',     warbond: 'control_group',      name: 'VG-70 Variable' },
-
-  // ─── SECONDARY: PISTOL ──────────────────────────────────────────────────
-  { id: 'secondary_peacemaker',         category: 'secondary', subtype: 'pistol',       warbond: 'helldivers_mobilize', name: 'P-2 Peacemaker' },
-  { id: 'secondary_redeemer',           category: 'secondary', subtype: 'pistol',       warbond: 'helldivers_mobilize', name: 'P-19 Redeemer' },
-  { id: 'secondary_senator',            category: 'secondary', subtype: 'pistol',       warbond: 'steeled_veterans',   name: 'P-4 Senator' },
-  { id: 'secondary_verdict',            category: 'secondary', subtype: 'pistol',       warbond: 'polar_patriots',     name: 'P-113 Verdict' },
-  { id: 'secondary_loyalist',           category: 'secondary', subtype: 'pistol',       warbond: 'chemical_agents',    name: 'P-11 Stim Pistol' },
-  { id: 'secondary_veto',               category: 'secondary', subtype: 'pistol',       warbond: 'entrenched_division', name: 'P-69 Veto' },
-  { id: 'secondary_grenade_pistol',     category: 'secondary', subtype: 'explosive',    warbond: 'democratic_detonation', name: 'GP-31 Grenade Pistol' },
-  { id: 'secondary_dagger',             category: 'secondary', subtype: 'energy',       warbond: 'cutting_edge',       name: 'LAS-7 Dagger' },
-  { id: 'secondary_stun_lance',         category: 'secondary', subtype: 'melee',        warbond: 'urban_legends',      name: 'CQC-30 Stun Lance' },
-  { id: 'secondary_stun_baton',         category: 'secondary', subtype: 'melee',        warbond: 'urban_legends',      name: 'CQC-19 Stun Baton' },
-  { id: 'secondary_entrenchment_tool',  category: 'secondary', subtype: 'melee',        warbond: 'entrenched_division', name: 'Entrenchment Tool' },
-
-  // ─── GRENADES ────────────────────────────────────────────────────────────
-  { id: 'grenade_frag',                 category: 'grenade', subtype: 'standard',       warbond: 'helldivers_mobilize', name: 'G-6 Frag' },
-  { id: 'grenade_high_explosive',       category: 'grenade', subtype: 'standard',       warbond: 'helldivers_mobilize', name: 'G-12 High Explosive' },
-  { id: 'grenade_smoke',                category: 'grenade', subtype: 'standard',       warbond: 'helldivers_mobilize', name: 'G-3 Smoke' },
-  { id: 'grenade_impact',               category: 'grenade', subtype: 'special',        warbond: 'helldivers_mobilize', name: 'G-16 Impact' },
-  { id: 'grenade_incendiary',           category: 'grenade', subtype: 'incendiary',     warbond: 'steeled_veterans',   name: 'G-13 Incendiary' },
-  { id: 'grenade_stun',                 category: 'grenade', subtype: 'special',        warbond: 'cutting_edge',       name: 'G-23 Stun' },
-  { id: 'grenade_incendiary_b',         category: 'grenade', subtype: 'incendiary',     warbond: 'cutting_edge',       name: 'G-10 Incendiary' },
-  { id: 'grenade_thermite',             category: 'grenade', subtype: 'special',        warbond: 'democratic_detonation', name: 'G-123 Thermite' },
-  { id: 'grenade_gas',                  category: 'grenade', subtype: 'special',        warbond: 'chemical_agents',    name: 'G-4 Gas' },
-  { id: 'grenade_seeker',               category: 'grenade', subtype: 'special',        warbond: 'viper_commandos',    name: 'G-50 Seeker' },
-  { id: 'grenade_pyrotech',             category: 'grenade', subtype: 'incendiary',     warbond: 'freedoms_flame',     name: 'G-109 Pyrotech' },
-  { id: 'grenade_toxic',                category: 'grenade', subtype: 'special',        warbond: 'entrenched_division', name: 'G-7 Toxic' },
-
-  // ─── ARMOR: LIGHT ────────────────────────────────────────────────────────
-  { id: 'armor_sc34_infiltrator',       category: 'armor', subtype: 'light',            warbond: 'helldivers_mobilize', name: 'SC-34 Infiltrator' },
-  { id: 'armor_sc30_trailblazer',       category: 'armor', subtype: 'light',            warbond: 'helldivers_mobilize', name: 'SC-30 Trailblazer Scout' },
-  { id: 'armor_sc37_legionnaire',       category: 'armor', subtype: 'light',            warbond: 'cutting_edge',       name: 'SC-37 Legionnaire' },
-  { id: 'armor_tr7_ambassador',         category: 'armor', subtype: 'light',            warbond: 'polar_patriots',     name: 'TR-7 Ambassador' },
-  { id: 'armor_fsc10_pale_dragon',      category: 'armor', subtype: 'light',            warbond: 'chemical_agents',    name: 'FSC-10 Pale Dragon' },
-  // ─── ARMOR: MEDIUM ───────────────────────────────────────────────────────
-  { id: 'armor_ce35_trench_engineer',   category: 'armor', subtype: 'medium',           warbond: 'helldivers_mobilize', name: 'CE-35 Trench Engineer' },
-  { id: 'armor_cm09_bonesnapper',       category: 'armor', subtype: 'medium',           warbond: 'helldivers_mobilize', name: 'CM-09 Bonesnapper' },
-  { id: 'armor_dp40_hero',              category: 'armor', subtype: 'medium',           warbond: 'helldivers_mobilize', name: 'DP-40 Hero of the Federation' },
-  { id: 'armor_sa04_combat_tech',       category: 'armor', subtype: 'medium',           warbond: 'helldivers_mobilize', name: 'SA-04 Combat Technician' },
-  { id: 'armor_cm14_physician',         category: 'armor', subtype: 'medium',           warbond: 'helldivers_mobilize', name: 'CM-14 Physician' },
-  { id: 'armor_b01_tactical',           category: 'armor', subtype: 'medium',           warbond: 'steeled_veterans',   name: 'B-01 Tactical' },
-  { id: 'armor_ce74_breaker',           category: 'armor', subtype: 'medium',           warbond: 'steeled_veterans',   name: 'CE-74 Breaker' },
-  { id: 'armor_ex00_prototype_x',       category: 'armor', subtype: 'medium',           warbond: 'cutting_edge',       name: 'EX-00 Prototype X' },
-  { id: 'armor_ce27_ground_breaker',    category: 'armor', subtype: 'medium',           warbond: 'democratic_detonation', name: 'CE-27 Ground Breaker' },
-  { id: 'armor_dp53_savior',            category: 'armor', subtype: 'medium',           warbond: 'democratic_detonation', name: 'DP-53 Savior of the Free' },
-  { id: 'armor_tr9_cavalier',           category: 'armor', subtype: 'medium',           warbond: 'polar_patriots',     name: 'TR-9 Cavalier' },
-  { id: 'armor_fsc14_spore_surgeon',    category: 'armor', subtype: 'medium',           warbond: 'chemical_agents',    name: 'FSC-14 Spore Surgeon' },
-  { id: 'armor_cpg48_sapper',           category: 'armor', subtype: 'medium',           warbond: 'entrenched_division', name: 'CPG-48 Sapper' },
-  // ─── ARMOR: HEAVY ────────────────────────────────────────────────────────
-  { id: 'armor_fs05_marksman',          category: 'armor', subtype: 'heavy',            warbond: 'helldivers_mobilize', name: 'FS-05 Marksman' },
-  { id: 'armor_fs23_battle_master',     category: 'armor', subtype: 'heavy',            warbond: 'helldivers_mobilize', name: 'FS-23 Battle Master' },
-  { id: 'armor_fs34_devastator',        category: 'armor', subtype: 'heavy',            warbond: 'steeled_veterans',   name: 'FS-34 Devastator' },
-  { id: 'armor_ex16_prototype',         category: 'armor', subtype: 'heavy',            warbond: 'cutting_edge',       name: 'EX-16 Prototype' },
-  { id: 'armor_fs55_devastator',        category: 'armor', subtype: 'heavy',            warbond: 'democratic_detonation', name: 'FS-55 Devastator' },
-  { id: 'armor_tr62_knight',            category: 'armor', subtype: 'heavy',            warbond: 'polar_patriots',     name: 'TR-62 Knight' },
-  { id: 'armor_fsc20_hazop',            category: 'armor', subtype: 'heavy',            warbond: 'chemical_agents',    name: 'FSC-20 Hazop' },
-
-  // ─── STRATAGEMS: ORBITAL ────────────────────────────────────────────────
-  { id: 'strat_orbital_gatling',        category: 'stratagem', subtype: 'orbital',      warbond: null,               name: 'Orbital Gatling Barrage' },
-  { id: 'strat_orbital_airburst',       category: 'stratagem', subtype: 'orbital',      warbond: null,               name: 'Orbital Airburst Strike' },
-  { id: 'strat_orbital_120mm',          category: 'stratagem', subtype: 'orbital',      warbond: null,               name: 'Orbital 120MM HE Barrage' },
-  { id: 'strat_orbital_380mm',          category: 'stratagem', subtype: 'orbital',      warbond: null,               name: 'Orbital 380MM HE Barrage' },
-  { id: 'strat_orbital_walking',        category: 'stratagem', subtype: 'orbital',      warbond: null,               name: 'Orbital Walking Barrage' },
-  { id: 'strat_orbital_laser',          category: 'stratagem', subtype: 'orbital',      warbond: null,               name: 'Orbital Laser' },
-  { id: 'strat_orbital_precision',      category: 'stratagem', subtype: 'orbital',      warbond: null,               name: 'Orbital Precision Strike' },
-  { id: 'strat_orbital_gas',            category: 'stratagem', subtype: 'orbital',      warbond: 'chemical_agents',  name: 'Orbital Gas Strike' },
-  { id: 'strat_orbital_ems',            category: 'stratagem', subtype: 'orbital',      warbond: null,               name: 'Orbital EMS Strike' },
-  { id: 'strat_orbital_smoke',          category: 'stratagem', subtype: 'orbital',      warbond: null,               name: 'Orbital Smoke Strike' },
-  { id: 'strat_orbital_railcannon',     category: 'stratagem', subtype: 'orbital',      warbond: null,               name: 'Orbital Railcannon Strike' },
-  { id: 'strat_orbital_napalm',         category: 'stratagem', subtype: 'orbital',      warbond: 'freedoms_flame',   name: 'Orbital Napalm Barrage' },
-  // ─── STRATAGEMS: EAGLE ──────────────────────────────────────────────────
-  { id: 'strat_eagle_airstrike',        category: 'stratagem', subtype: 'eagle',        warbond: null,               name: 'Eagle Airstrike' },
-  { id: 'strat_eagle_cluster_bomb',     category: 'stratagem', subtype: 'eagle',        warbond: null,               name: 'Eagle Cluster Bomb' },
-  { id: 'strat_eagle_napalm',           category: 'stratagem', subtype: 'eagle',        warbond: null,               name: 'Eagle Napalm Airstrike' },
-  { id: 'strat_eagle_smoke',            category: 'stratagem', subtype: 'eagle',        warbond: null,               name: 'Eagle Smoke Strike' },
-  { id: 'strat_eagle_110mm',            category: 'stratagem', subtype: 'eagle',        warbond: null,               name: 'Eagle 110MM Rocket Pods' },
-  { id: 'strat_eagle_500kg',            category: 'stratagem', subtype: 'eagle',        warbond: null,               name: 'Eagle 500KG Bomb' },
-  { id: 'strat_eagle_strafing',         category: 'stratagem', subtype: 'eagle',        warbond: null,               name: 'Eagle Strafing Run' },
-  // ─── STRATAGEMS: SUPPORT WEAPON ─────────────────────────────────────────
-  { id: 'strat_machine_gun',            category: 'stratagem', subtype: 'support',      warbond: null,               name: 'MG-43 Machine Gun' },
-  { id: 'strat_heavy_machine_gun',      category: 'stratagem', subtype: 'support',      warbond: null,               name: 'MG-206 Heavy Machine Gun' },
-  { id: 'strat_stalwart',               category: 'stratagem', subtype: 'support',      warbond: null,               name: 'M-105 Stalwart' },
-  { id: 'strat_anti_materiel_rifle',    category: 'stratagem', subtype: 'support',      warbond: null,               name: 'APW-1 Anti-Materiel Rifle' },
-  { id: 'strat_autocannon',             category: 'stratagem', subtype: 'support',      warbond: null,               name: 'AC-8 Autocannon' },
-  { id: 'strat_arc_thrower',            category: 'stratagem', subtype: 'support',      warbond: null,               name: 'ARC-3 Arc Thrower' },
-  { id: 'strat_flamethrower',           category: 'stratagem', subtype: 'support',      warbond: null,               name: 'FLAM-40 Flamethrower' },
-  { id: 'strat_grenade_launcher',       category: 'stratagem', subtype: 'support',      warbond: null,               name: 'GL-21 Grenade Launcher' },
-  { id: 'strat_belt_fed_gl',            category: 'stratagem', subtype: 'support',      warbond: null,               name: 'GL-28 Belt-Fed GL' },
-  { id: 'strat_recoilless_rifle',       category: 'stratagem', subtype: 'support',      warbond: null,               name: 'GR-8 Recoilless Rifle' },
-  { id: 'strat_expendable_at',          category: 'stratagem', subtype: 'support',      warbond: null,               name: 'EAT-17 Expendable Anti-Tank' },
-  { id: 'strat_spear',                  category: 'stratagem', subtype: 'support',      warbond: null,               name: 'FAF-14 Spear' },
-  { id: 'strat_laser_cannon',           category: 'stratagem', subtype: 'support',      warbond: null,               name: 'LAS-98 Laser Cannon' },
-  { id: 'strat_quasar_cannon',          category: 'stratagem', subtype: 'support',      warbond: null,               name: 'LAS-99 Quasar Cannon' },
-  { id: 'strat_railgun',                category: 'stratagem', subtype: 'support',      warbond: null,               name: 'RS-422 Railgun' },
-  { id: 'strat_airburst_rl',            category: 'stratagem', subtype: 'support',      warbond: null,               name: 'RL-77 Airburst RL' },
-  { id: 'strat_commando',               category: 'stratagem', subtype: 'support',      warbond: null,               name: 'MLS-4X Commando' },
-  { id: 'strat_wasp',                   category: 'stratagem', subtype: 'support',      warbond: null,               name: 'StA-X3 W.A.S.P.' },
-  { id: 'strat_cremator',               category: 'stratagem', subtype: 'support',      warbond: 'freedoms_flame',   name: 'B/FLAM-80 Cremator' },
-  { id: 'strat_expendable_napalm',      category: 'stratagem', subtype: 'support',      warbond: 'freedoms_flame',   name: 'EAT-700 Expendable Napalm' },
-  { id: 'strat_leveller',               category: 'stratagem', subtype: 'support',      warbond: null,               name: 'EAT-411 Leveller' },
-  { id: 'strat_epoch',                  category: 'stratagem', subtype: 'support',      warbond: null,               name: 'PLAS-45 Epoch' },
-  { id: 'strat_maxigun',                category: 'stratagem', subtype: 'support',      warbond: null,               name: 'M-1000 Maxigun' },
-  { id: 'strat_speargun',               category: 'stratagem', subtype: 'support',      warbond: null,               name: 'S-11 Speargun' },
-  { id: 'strat_deescalator',            category: 'stratagem', subtype: 'support',      warbond: null,               name: 'GL-52 De-Escalator' },
-  // ─── STRATAGEMS: BACKPACK ───────────────────────────────────────────────
-  { id: 'strat_supply_pack',            category: 'stratagem', subtype: 'backpack',     warbond: null,               name: 'B-1 Supply Pack' },
-  { id: 'strat_ballistic_shield',       category: 'stratagem', subtype: 'backpack',     warbond: null,               name: 'SH-20 Ballistic Shield' },
-  { id: 'strat_arc_shield',             category: 'stratagem', subtype: 'backpack',     warbond: null,               name: 'SH-32 Shield Generator Pack' },
-  { id: 'strat_jump_pack',              category: 'stratagem', subtype: 'backpack',     warbond: null,               name: 'LIFT-850 Jump Pack' },
-  { id: 'strat_hover_pack',             category: 'stratagem', subtype: 'backpack',     warbond: 'urban_legends',    name: 'LIFT-860 Hover Pack' },
-  { id: 'strat_warp_pack',              category: 'stratagem', subtype: 'backpack',     warbond: null,               name: 'LIFT-182 Warp Pack' },
-  { id: 'strat_guard_dog_rover',        category: 'stratagem', subtype: 'backpack',     warbond: null,               name: 'AX/LAS-5 Rover' },
-  { id: 'strat_guard_dog',              category: 'stratagem', subtype: 'backpack',     warbond: null,               name: 'AX/AR-23 Guard Dog' },
-  { id: 'strat_hot_dog',                category: 'stratagem', subtype: 'backpack',     warbond: 'freedoms_flame',   name: 'AX/FLAM-75 Hot Dog' },
-  { id: 'strat_k9',                     category: 'stratagem', subtype: 'backpack',     warbond: null,               name: 'AX/ARC-3 K-9' },
-  { id: 'strat_dog_breath',             category: 'stratagem', subtype: 'backpack',     warbond: 'chemical_agents',  name: 'AX/TX-13 Dog Breath' },
-  { id: 'strat_directional_shield',     category: 'stratagem', subtype: 'backpack',     warbond: 'urban_legends',    name: 'SH-51 Directional Shield' },
-  { id: 'strat_portable_hellbomb',      category: 'stratagem', subtype: 'backpack',     warbond: null,               name: 'B-100 Portable Hellbomb' },
-  // ─── STRATAGEMS: SENTRY ─────────────────────────────────────────────────
-  { id: 'strat_mg_sentry',              category: 'stratagem', subtype: 'sentry',       warbond: null,               name: 'A/MG-43 Machine Gun Sentry' },
-  { id: 'strat_gatling_sentry',         category: 'stratagem', subtype: 'sentry',       warbond: null,               name: 'A/G-16 Gatling Sentry' },
-  { id: 'strat_mortar_sentry',          category: 'stratagem', subtype: 'sentry',       warbond: null,               name: 'A/M-12 Mortar Sentry' },
-  { id: 'strat_autocannon_sentry',      category: 'stratagem', subtype: 'sentry',       warbond: null,               name: 'A/AC-8 Autocannon Sentry' },
-  { id: 'strat_ems_mortar_sentry',      category: 'stratagem', subtype: 'sentry',       warbond: null,               name: 'A/M-23 EMS Mortar Sentry' },
-  { id: 'strat_tesla_tower',            category: 'stratagem', subtype: 'sentry',       warbond: null,               name: 'A/ARC-3 Tesla Tower' },
-  { id: 'strat_flame_sentry',           category: 'stratagem', subtype: 'sentry',       warbond: 'freedoms_flame',   name: 'A/FLAM-40 Flame Sentry' },
-  { id: 'strat_laser_sentry',           category: 'stratagem', subtype: 'sentry',       warbond: null,               name: 'A/LAS-98 Laser Sentry' },
-  { id: 'strat_rocket_sentry',          category: 'stratagem', subtype: 'sentry',       warbond: null,               name: 'A/MLS-4X Rocket Sentry' },
-  { id: 'strat_gas_mortar_sentry',      category: 'stratagem', subtype: 'sentry',       warbond: 'entrenched_division', name: 'A/GM-17 Gas Mortar Sentry' },
-  // ─── STRATAGEMS: EMPLACEMENT ────────────────────────────────────────────
-  { id: 'strat_at_emplacement',         category: 'stratagem', subtype: 'emplacement',  warbond: null,               name: 'E/AT-12 Anti-Tank Emplacement' },
-  { id: 'strat_hmg_emplacement',        category: 'stratagem', subtype: 'emplacement',  warbond: null,               name: 'E/MG-101 HMG Emplacement' },
-  { id: 'strat_grenadier_battlement',   category: 'stratagem', subtype: 'emplacement',  warbond: null,               name: 'E/GL-21 Grenadier Battlement' },
-  { id: 'strat_shield_relay',           category: 'stratagem', subtype: 'emplacement',  warbond: null,               name: 'FX-12 Shield Generator Relay' },
-  // ─── STRATAGEMS: MINES ──────────────────────────────────────────────────
-  { id: 'strat_ap_mines',               category: 'stratagem', subtype: 'mines',        warbond: null,               name: 'MD-6 Anti-Personnel Minefield' },
-  { id: 'strat_at_mines',               category: 'stratagem', subtype: 'mines',        warbond: null,               name: 'MD-17 Anti-Tank Mines' },
-  { id: 'strat_gas_mines',              category: 'stratagem', subtype: 'mines',        warbond: 'chemical_agents',  name: 'MD-8 Gas Mines' },
-  { id: 'strat_incendiary_mines',       category: 'stratagem', subtype: 'mines',        warbond: 'freedoms_flame',   name: 'MD-I4 Incendiary Mines' },
-  // ─── STRATAGEMS: MECH ───────────────────────────────────────────────────
-  { id: 'strat_patriot_exosuit',        category: 'stratagem', subtype: 'mech',         warbond: null,               name: 'EXO-45 Patriot Exosuit' },
-  { id: 'strat_emancipator_exosuit',    category: 'stratagem', subtype: 'mech',         warbond: null,               name: 'EXO-49 Emancipator Exosuit' },
-  // ─── STRATAGEMS: MISIÓN ─────────────────────────────────────────────────
-  { id: 'strat_reinforce',              category: 'stratagem', subtype: 'mission',      warbond: null,               name: 'Reinforce' },
-  { id: 'strat_sos_beacon',             category: 'stratagem', subtype: 'mission',      warbond: null,               name: 'SOS Beacon' },
-  { id: 'strat_hellbomb',               category: 'stratagem', subtype: 'mission',      warbond: null,               name: 'Hellbomb' },
-  { id: 'strat_seaf_artillery',         category: 'stratagem', subtype: 'mission',      warbond: null,               name: 'SEAF Artillery' },
-  { id: 'strat_upload_data',            category: 'stratagem', subtype: 'mission',      warbond: null,               name: 'Upload Data' },
-  { id: 'strat_resupply',               category: 'stratagem', subtype: 'mission',      warbond: null,               name: 'Resupply' },
-  // ─── STRATAGEMS: CQC ESPECIAL ───────────────────────────────────────────
-  { id: 'strat_one_true_flag',          category: 'stratagem', subtype: 'cqc',          warbond: null,               name: 'CQC-1 One True Flag' },
-  { id: 'strat_defoliation_tool',       category: 'stratagem', subtype: 'cqc',          warbond: null,               name: 'CQC-9 Defoliation Tool' },
-  { id: 'strat_breaching_hammer',       category: 'stratagem', subtype: 'cqc',          warbond: null,               name: 'CQC-20 Breaching Hammer' },
-  { id: 'strat_c4_pack',                category: 'stratagem', subtype: 'cqc',          warbond: null,               name: 'B/MD C4 Pack' },
-  { id: 'strat_solo_silo',              category: 'stratagem', subtype: 'cqc',          warbond: null,               name: 'MS-11 Solo Silo' },
-
-  // ─── BOOSTERS ────────────────────────────────────────────────────────────
-  { id: 'booster_hellpod_optimisation', category: 'booster', subtype: 'supply',         warbond: 'helldivers_mobilize', name: 'Hellpod Space Optimisation' },
-  { id: 'booster_vitality',             category: 'booster', subtype: 'survival',       warbond: 'helldivers_mobilize', name: 'Vitality Enhancement' },
-  { id: 'booster_stamina',              category: 'booster', subtype: 'mobility',       warbond: 'helldivers_mobilize', name: 'Stamina Enhancement' },
-  { id: 'booster_muscle',               category: 'booster', subtype: 'mobility',       warbond: 'helldivers_mobilize', name: 'Muscle Enhancement' },
-  { id: 'booster_uav',                  category: 'booster', subtype: 'recon',          warbond: 'helldivers_mobilize', name: 'UAV Recon Booster' },
-  { id: 'booster_reinforcement_budget', category: 'booster', subtype: 'reinforcement',  warbond: 'helldivers_mobilize', name: 'Increased Reinforcement Budget' },
-  { id: 'booster_flex_reinforcement',   category: 'booster', subtype: 'reinforcement',  warbond: 'helldivers_mobilize', name: 'Flexible Reinforcement Budget' },
-  { id: 'booster_extraction_pilot',     category: 'booster', subtype: 'extraction',     warbond: 'steeled_veterans',   name: 'Expert Extraction Pilot' },
-  { id: 'booster_localization',         category: 'booster', subtype: 'stealth',        warbond: 'cutting_edge',       name: 'Localization Confusion' },
-  { id: 'booster_experimental_infusion',category: 'booster', subtype: 'survival',       warbond: 'viper_commandos',    name: 'Experimental Infusion' },
-  { id: 'booster_motivational_shocks',  category: 'booster', subtype: 'survival',       warbond: 'democratic_detonation', name: 'Motivational Shocks' },
-  { id: 'booster_firebomb_hellpods',    category: 'booster', subtype: 'hellpod',        warbond: 'freedoms_flame',     name: 'Firebomb Hellpods' },
-  { id: 'booster_stun_pods',            category: 'booster', subtype: 'hellpod',        warbond: 'cutting_edge',       name: 'Stun Pods' },
-  { id: 'booster_infested_survey',      category: 'booster', subtype: 'recon',          warbond: 'polar_patriots',     name: 'Infested Planet Survey' },
-  { id: 'booster_sample_scanner',       category: 'booster', subtype: 'recon',          warbond: 'masters_of_ceremony', name: 'Sample Scanner' },
-  { id: 'booster_siege_ready',          category: 'booster', subtype: 'combat',         warbond: 'siege_breakers',     name: 'Siege Ready' },
-  { id: 'booster_hollow_point',         category: 'booster', subtype: 'combat',         warbond: 'dust_devils',        name: 'Hollow Point Ammunition' },
-  { id: 'booster_trench_combat',        category: 'booster', subtype: 'combat',         warbond: 'entrenched_division', name: 'Trench Combat Training' },
-]
-
-export function getItemInitials(name) {
-  return name.split(' ').slice(0, 2).map(w => w[0]).join('')
-}
-
+// ─── CATEGORÍAS ───────────────────────────────────────────────────────────────
 export const CATEGORIES = ['primary', 'secondary', 'grenade', 'armor', 'stratagem', 'booster']
 
 export const CATEGORY_LABELS = {
@@ -271,6 +33,15 @@ export const CATEGORY_LABELS = {
   armor:     'Armadura',
   stratagem: 'Estratagema',
   booster:   'Booster',
+}
+
+export const CATEGORY_SUBTYPES = {
+  primary:   ['assault_rifle', 'shotgun', 'marksman_rifle', 'smg', 'energy', 'explosive', 'flamethrower', 'volley_gun'],
+  secondary: ['pistol', 'explosive', 'energy', 'melee'],
+  grenade:   ['standard', 'special', 'incendiary'],
+  armor:     ['light', 'medium', 'heavy'],
+  stratagem: ['eagle', 'orbital', 'support', 'backpack', 'sentry', 'emplacement', 'mines', 'mech', 'mission', 'cqc'],
+  booster:   ['supply', 'survival', 'mobility', 'recon', 'reinforcement', 'extraction', 'stealth', 'hellpod', 'combat'],
 }
 
 export const SUBTYPE_LABELS = {
@@ -305,7 +76,21 @@ export const SUBTYPE_LABELS = {
   mech:           'Mech',
   mission:        'Mission',
   cqc:            'CQC Especial',
+  // Booster
+  supply:         'Supply',
+  survival:       'Survival',
+  mobility:       'Mobility',
+  recon:          'Recon',
+  reinforcement:  'Reinforcement',
+  extraction:     'Extraction',
+  stealth:        'Stealth',
+  hellpod:        'Hellpod',
+  combat:         'Combat',
 }
 
 // Categorías que se agrupan por subtipo en el inventario
 export const GROUPED_CATEGORIES = new Set(['stratagem', 'armor', 'primary', 'secondary', 'grenade', 'booster'])
+
+export function getItemInitials(name) {
+  return name.split(' ').slice(0, 2).map(w => w[0]).join('')
+}

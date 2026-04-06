@@ -1,14 +1,8 @@
 import { useState, useMemo } from 'react'
-import { ITEMS, CATEGORIES, CATEGORY_LABELS, SUBTYPE_LABELS, WARBONDS, GROUPED_CATEGORIES } from '../../data/items.js'
-
-const CATEGORY_SUBTYPES = {
-  primary:   ['assault_rifle', 'shotgun', 'marksman_rifle', 'smg', 'energy', 'explosive', 'flamethrower', 'volley_gun'],
-  secondary: ['pistol', 'explosive', 'energy', 'melee'],
-  grenade:   ['standard', 'special', 'incendiary'],
-  armor:     ['light', 'medium', 'heavy'],
-  stratagem: ['eagle', 'orbital', 'support', 'backpack', 'sentry', 'emplacement', 'mines', 'mech', 'mission', 'cqc'],
-  booster:   ['supply', 'survival', 'mobility', 'recon', 'reinforcement', 'extraction', 'stealth', 'hellpod', 'combat'],
-}
+import {
+  CATEGORIES, CATEGORY_LABELS, SUBTYPE_LABELS, WARBONDS,
+  CATEGORY_SUBTYPES,
+} from '../../data/items.js'
 import { useProfilesCtx } from '../../App.jsx'
 import { useImagesCtx } from '../../App.jsx'
 import { useAdminCtx } from '../../App.jsx'
@@ -46,7 +40,6 @@ function WarbondPanel({ allItems, ownedSet, images, editMode, onSelectWarbond, o
             display: 'flex',
             flexDirection: 'column',
           }}>
-            {/* Image area */}
             <div
               style={{
                 height: 70,
@@ -102,21 +95,15 @@ function WarbondPanel({ allItems, ownedSet, images, editMode, onSelectWarbond, o
 export default function InventoryPage() {
   const { ownedSet, toggleOwned, setAllOwned } = useProfilesCtx()
   const { images, setImage, deleteImage, dbError } = useImagesCtx()
-  const { customItems, addCustomItem, removeCustomItem, editMode, itemOverrides, setItemOverride, clearItemOverride } = useAdminCtx()
-  const [activeCategory, setActiveCategory] = useState('primary')
-  const [showWarbonds, setShowWarbonds] = useState(false)
-  const [addForm, setAddForm] = useState(null)
+  const { catalogItems, addCatalogItem, updateCatalogItem, deleteCatalogItem, editMode } = useAdminCtx()
 
-  // File input ref for warbond image uploads
+  const [activeCategory, setActiveCategory] = useState('primary')
+  const [showWarbonds, setShowWarbonds]     = useState(false)
+  const [addForm, setAddForm]               = useState(null)
   const [pendingWarbondId, setPendingWarbondId] = useState(null)
 
-  const allItems = useMemo(() => {
-    return [...ITEMS, ...customItems.map(i => ({ ...i, _isCustom: true }))].map(item => {
-      const ov = itemOverrides[item.id]
-      if (!ov) return item
-      return { ...item, ...(ov.name ? { name: ov.name } : {}), archived: ov.archived ?? false }
-    })
-  }, [customItems, itemOverrides])
+  // All items from catalog; archived ones hidden unless editMode
+  const allItems = useMemo(() => catalogItems, [catalogItems])
 
   const counts = useMemo(() => {
     const result = {}
@@ -131,7 +118,7 @@ export default function InventoryPage() {
   }, [ownedSet, allItems])
 
   const categoryItems = allItems.filter(i => i.category === activeCategory)
-  const visibleItems = editMode ? categoryItems : categoryItems.filter(i => !i.archived)
+  const visibleItems  = editMode ? categoryItems : categoryItems.filter(i => !i.archived)
 
   // Group by subtype
   const grouped = useMemo(() => {
@@ -144,21 +131,23 @@ export default function InventoryPage() {
     return groups
   }, [visibleItems])
 
-  const catIds = visibleItems.map(i => i.id)
+  const catIds   = visibleItems.map(i => i.id)
   const allOwned = catIds.length > 0 && catIds.every(id => ownedSet.has(id))
   const noneOwned = catIds.every(id => !ownedSet.has(id))
 
   async function handleRename(itemId, newName) {
-    await setItemOverride(itemId, { name: newName })
+    const item = allItems.find(i => i.id === itemId)
+    await updateCatalogItem(itemId, { name: newName }, item)
   }
 
   async function handleArchive(itemId, archived) {
-    await setItemOverride(itemId, { archived })
+    const item = allItems.find(i => i.id === itemId)
+    await updateCatalogItem(itemId, { archived }, item)
   }
 
   async function handleDelete(itemId) {
-    await removeCustomItem(itemId)
-    await clearItemOverride(itemId)
+    const item = allItems.find(i => i.id === itemId)
+    await deleteCatalogItem(itemId, item?.name ?? itemId)
   }
 
   function handleWarbondImageUpload(warbondId) {
@@ -183,12 +172,12 @@ export default function InventoryPage() {
     e.preventDefault()
     const { name, subtype } = addForm
     if (!name.trim()) return
-    const newItem = {
+    await addCatalogItem({
       category: activeCategory,
       name: name.trim(),
       ...(subtype ? { subtype } : {}),
-    }
-    await addCustomItem(newItem)
+      warbond: null,
+    })
     setAddForm(null)
   }
 
@@ -217,7 +206,7 @@ export default function InventoryPage() {
           placeholder="Nombre"
           value={addForm.name}
           onChange={e => setAddForm(f => ({ ...f, name: e.target.value }))}
-          maxLength={60}
+          maxLength={80}
           style={{ fontSize: '0.78rem', padding: '4px 8px' }}
         />
         <select
@@ -269,7 +258,6 @@ export default function InventoryPage() {
 
   return (
     <div>
-      {/* Hidden file input for warbond images */}
       <input
         id="warbond-file-input"
         type="file"

@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { doc, onSnapshot, setDoc, updateDoc } from 'firebase/firestore'
 import { db } from '../firebase.js'
-import { DEFAULT_OWNED_IDS } from '../data/items.js'
 
 export function useProfiles(user) {
   const [activeProfile, setActiveProfile] = useState(null)
@@ -19,10 +18,8 @@ export function useProfiles(user) {
       if (snap.exists()) {
         setActiveProfile({ id: user.uid, ...snap.data() })
       } else {
-        // First login — create the profile document with default items
-        const defaultOwned = {}
-        DEFAULT_OWNED_IDS.forEach(id => { defaultOwned[id] = true })
-        const newProfile = { name: user.displayName || 'Helldiver', ownedItems: defaultOwned }
+        // First login — create the profile document with no items owned yet
+        const newProfile = { name: user.displayName || 'Helldiver', ownedItems: {} }
         setDoc(ref, newProfile)
         setActiveProfile({ id: user.uid, ...newProfile })
       }
